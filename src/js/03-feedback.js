@@ -1,17 +1,17 @@
 import throttle from 'lodash.throttle';
 
-const refs = {
-  feedbackForm: document.querySelector('.feedback-form'),
-  formInput: document.querySelector('.feedback-form input'),
-  formTextarea: document.querySelector('.feedback-form textarea'),
-};
 
-const STORAGE_KEY = 'feedback-form-state';
-const formFeedbackData = {};
-const userFormData = {
-  email: refs.formInput,
-  message: refs.formTextarea,
-};
+const formEl = document.querySelector('.feedback-form');
+const inputEl = document.querySelector('.feedback-form input');
+const textareaEl = document.querySelector('.feedback-form textarea');
+const formData = {};
+
+// const STORAGE_KEY = 'feedback-form-state';
+// const formFeedbackData = {};
+// const userFormData = {
+//   email: refs.formInput,
+//   message: refs.formTextarea,
+// };
 
 refs.feedbackForm.addEventListener('input', throttle(formInputHandler, 500));
 refs.feedbackForm.addEventListener('submit', onSubmitFormBtnClick);
