@@ -26,7 +26,7 @@ function onFormInput(event) {
   localStorage.setItem('feedback-form-state', JSON.stringify(formData));
 }
 
-function satSavesData() {
+function setSavesData() {
   const savedData = JSON.parse(localStorage.getItem('feedback-form-state'));
   if (savedData.email) {
     inputEl.value = savedData.email;
