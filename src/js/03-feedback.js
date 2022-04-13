@@ -1,37 +1,46 @@
 import throttle from 'lodash.throttle';
 
-const formEl = document.querySelector('.feedback-form');
-const inputEl = document.querySelector('.feedback-form input');
-const textareaEl = document.querySelector('.feedback-form textarea');
-const formData = {};
+const refs = {
+  feedbackForm: document.querySelector('.feedback-form'),
+  formInput: document.querySelector('.feedback-form input'),
+  formTextarea: document.querySelector('.feedback-form textarea'),
+};
 
+const STORAGE_KEY = 'feedback-form-state';
+const formFeedbackData = {};
+const userFormData = {
+  email: refs.formInput,
+  message: refs.formTextarea,
+};
 
+refs.feedbackForm.addEventListener('input', throttle(formInputHandler, 500));
+refs.feedbackForm.addEventListener('submit', onSubmitFormBtnClick);
+populateSavedData();
 
-
-formEl.addEventListener('input', throttle(onFormInput, 500));
-formEl.addEventListener('submit', onFormSubmit);
-
-
-setSavesData();
-function onFormSubmit(event) {
-  event.preventDefault();
-  const savedData = JSON.parse(localStorage.getItem('feedback-form-state'));
-  console.log(savedData);
-  event.currentTarget.reset();
-  localStorage.removeItem('feedback-form-state');
+function formInputHandler(e) {
+  formFeedbackData[e.target.name] = e.target.value;
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(formFeedbackData));
 }
 
-function onFormInput(event) {
-  formData[event.target.name] = event.target.value;
-  localStorage.setItem('feedback-form-state', JSON.stringify(formData));
+function populateSavedData() {
+  const savedFormData = JSON.parse(localStorage.getItem(STORAGE_KEY));
+  if (savedFormData.email) {
+    userFormData.email.value = savedFormData.email;
+    formFeedbackData.email = userFormData.email.value;
+  }
+  if (savedFormData.message) {
+    userFormData.message.value = savedFormData.message;
+    formFeedbackData.message = userFormData.message.value;
+  }
 }
 
-function setSavesData() {
-  const savedData = JSON.parse(localStorage.getItem('feedback-form-state'));
-  if (savedData.email) {
-    inputEl.value = savedData.email;
-  };
-  if (savedData.message) {
-    textareaEl.value = savedData.message;
-  };
+function onSubmitFormBtnClick(e) {
+  e.preventDefault();
+  if (e.currentTarget.email.value === '' || e.currentTarget.message.value === '') {
+    alert('Please, fill in empty areas in order to submit form!');
+  } else {
+    console.log('formData: ', formFeedbackData);
+    e.currentTarget.reset();
+    localStorage.removeItem(STORAGE_KEY);
+  }
 }
